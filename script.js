@@ -491,6 +491,7 @@ function maybeShowBirthdayGreeting(now = new Date()) {
   return true;
 }
 function setupStorefrontExtras() {
+  setupCharmInteraction();
   const query = new URLSearchParams(location.search).get('q');
   if (query) { const field = document.getElementById('siteSearch'); if (field) field.value = query; }
   maybeShowBirthdayGreeting();
@@ -510,4 +511,26 @@ function toggleMenu() {
 function toggleLuna() {
   const note = document.getElementById('lunaNote');
   if (note) note.hidden = !note.hidden;
+}
+function toggleCharm() {
+  const charm = document.getElementById('heroCharm');
+  if (!charm) return;
+  const turned = charm.classList.toggle('is-turned');
+  charm.setAttribute('aria-pressed', String(turned));
+}
+function setupCharmInteraction() {
+  const charm = document.getElementById('heroCharm');
+  if (!charm || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  charm.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    const bounds = charm.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - .5;
+    const y = (event.clientY - bounds.top) / bounds.height - .5;
+    charm.style.setProperty('--tilt-x', `${-y * 18}deg`);
+    charm.style.setProperty('--tilt-y', `${x * 24}deg`);
+  });
+  charm.addEventListener('pointerleave', () => {
+    charm.style.setProperty('--tilt-x', '0deg');
+    charm.style.setProperty('--tilt-y', '0deg');
+  });
 }
