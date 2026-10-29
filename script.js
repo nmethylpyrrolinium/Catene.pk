@@ -394,8 +394,8 @@ function updateCartSummary() {
 
 function checkout() {
     if (!cart.length) { showNotification('Your bag is empty. Add an item first.', 'error'); return; }
-    const lines = cart.map(item => `• ${item.name} × ${item.quantity} — PKR ${(item.price*item.quantity).toLocaleString()}`).join('\\n');
-    const body = `Hello Catene.pk,\\n\\nI’d like to ask about:\\n${lines}\\n\\nItem subtotal: PKR ${getCartTotal().toLocaleString()}\\nPlease confirm availability, delivery charges and payment options.`;
+    const lines = cart.map(item => `• ${item.name} × ${item.quantity} — PKR ${(item.price*item.quantity).toLocaleString()}`).join('\n');
+    const body = `Hello Catene.pk,\n\nI’d like to ask about:\n${lines}\n\nItem subtotal: PKR ${getCartTotal().toLocaleString()}\nPlease confirm availability, delivery charges and payment options.`;
     const subject = encodeURIComponent('Catene.pk order enquiry');
     window.location.href = `mailto:maheenramzan13@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
 }
