@@ -8,7 +8,7 @@ const products = [
     {
         id: 1,
         name: "Pearl Crescent",
-        category: "charms",
+        category: "phone-charms",
         price: 1500,
         rating: 5,
         reviews: 48,
@@ -28,7 +28,7 @@ const products = [
     {
         id: 3,
         name: "Turquoise Tassel",
-        category: "charms",
+        category: "phone-charms",
         price: 1800,
         rating: 5,
         reviews: 56,
@@ -48,7 +48,7 @@ const products = [
     {
         id: 5,
         name: "Diamond Star",
-        category: "charms",
+        category: "phone-charms",
         price: 2000,
         rating: 5,
         reviews: 72,
@@ -68,7 +68,7 @@ const products = [
     {
         id: 7,
         name: "Emerald Lotus",
-        category: "charms",
+        category: "phone-charms",
         price: 1900,
         rating: 5,
         reviews: 61,
@@ -88,7 +88,7 @@ const products = [
     {
         id: 9,
         name: "Ruby Heart Charm",
-        category: "bracelets",
+        category: "phone-charms",
         price: 2200,
         rating: 5,
         reviews: 88,
@@ -108,7 +108,7 @@ const products = [
     {
         id: 11,
         name: "Golden Filigree",
-        category: "charms",
+        category: "phone-charms",
         price: 1950,
         rating: 5,
         reviews: 52,
@@ -147,6 +147,7 @@ let filteredProducts = [...products];
 
 // ========== INITIALIZATION ==========
 document.addEventListener('DOMContentLoaded', () => {
+    setupStorefrontExtras();
     loadCart();
     updateCartUI();
     detectUserLocation();
@@ -205,10 +206,9 @@ function setupScrollAnimations() {
 // ========== CART MANAGEMENT ==========
 
 function loadCart() {
-    const savedCart = localStorage.getItem('catene_cart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    }
+    try { const saved = localStorage.getItem('catene_cart'); const parsed = saved ? JSON.parse(saved) : [];
+      cart = Array.isArray(parsed) ? parsed.filter(item => item && Number.isInteger(item.id) && Number.isFinite(item.price) && Number.isInteger(item.quantity) && item.quantity > 0) : [];
+    } catch { cart = []; }
 }
 
 function saveCart() {
@@ -271,23 +271,11 @@ function getCartTotal() {
 // ========== CURRENCY MANAGEMENT ==========
 
 function changeCurrency() {
-    const select = document.getElementById('currencySelect');
-    if (!select) return;
-    
-    currentCurrency = select.value;
-    
-    // Re-render all prices
-    if (document.getElementById('productsGrid')) {
-        renderShopProducts();
-    }
-    if (document.getElementById('featuredProducts')) {
-        renderFeaturedProducts();
-    }
-    if (document.getElementById('cartItemsContainer')) {
-        renderCart();
-    }
-    
-    localStorage.setItem('catene_currency', currentCurrency);
+    const select = document.getElementById('currencySelect'); if (!select || !['PKR','USD','EUR'].includes(select.value)) return;
+    currentCurrency = select.value; localStorage.setItem('catene_currency', currentCurrency);
+    if (document.getElementById('productsGrid')) renderShopProducts();
+    if (document.getElementById('featuredProducts')) renderFeaturedProducts();
+    if (document.getElementById('cartItemsContainer')) renderCart();
 }
 
 function formatPrice(amount) {
@@ -303,13 +291,8 @@ function formatPrice(amount) {
 
 function detectUserLocation() {
     const savedCurrency = localStorage.getItem('catene_currency');
-    if (savedCurrency) {
-        currentCurrency = savedCurrency;
-        const selects = document.querySelectorAll('#currencySelect');
-        selects.forEach(select => {
-            select.value = currentCurrency;
-        });
-    }
+    currentCurrency = ['PKR','USD','EUR'].includes(savedCurrency) ? savedCurrency : 'PKR';
+    document.querySelectorAll('#currencySelect').forEach(select => select.value = currentCurrency);
 }
 
 // ========== PRODUCT RENDERING ==========
@@ -341,35 +324,17 @@ function renderShopProducts() {
 }
 
 function createProductCard(product, index) {
-    const stars = createStars(product.rating);
-    const delay = index * 0.05;
-    
+    const delay = index * 0.04;
+    const categoryLabel = product.category === 'phone-charms' ? 'Phone charm' : 'Keychain';
     return `
-        <div class="product-card" style="animation-delay: ${delay}s">
-            <div class="product-image">
-                <i class="fas fa-sparkles placeholder"></i>
-                ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
-            </div>
-            <div class="product-info">
-                <p class="product-category">${product.category}</p>
-                <h3 class="product-name">${product.name}</h3>
-                <div class="product-rating">
-                    <div class="stars">${stars}</div>
-                    <span class="rating-text">(${product.reviews})</span>
-                </div>
-                <p class="product-price">${formatPrice(product.price)}</p>
-                <p class="product-description">${product.description}</p>
-                <div class="product-actions">
-                    <button class="btn-add-cart" onclick="addToCart(${product.id})">
-                        <i class="fas fa-shopping-cart"></i> Add
-                    </button>
-                    <button class="btn-wishlist" title="Add to Wishlist" onclick="toggleWishlist(event)">
-                        <i class="far fa-heart"></i>
-                    </button>
-                </div>
-            </div>
+      <article class="product-card" style="animation-delay: ${delay}s">
+        <div class="product-image" aria-hidden="true"><span class="product-art">${product.category === 'keychains' ? '⌁' : '✳'}</span></div>
+        <div class="product-info">
+          <p class="product-category">${categoryLabel}</p><h3 class="product-name">${product.name}</h3>
+          <p class="product-price">${formatPrice(product.price)}</p><p class="product-description">${product.description}</p>
+          <div class="product-actions"><button class="btn-add-cart" type="button" onclick="addToCart(${product.id})">Add to bag</button></div>
         </div>
-    `;
+      </article>`;
 }
 
 function createStars(rating) {
@@ -392,50 +357,22 @@ function createStars(rating) {
 
 function applyFilters() {
     let filtered = [...products];
-    
-    // Category filter - DEFAULT TO ALL IF NO PARAM
-    const categoryCheckboxes = document.querySelectorAll('.filter-group input[type="checkbox"]');
-    const selectedCategories = Array.from(categoryCheckboxes)
-        .filter(cb => cb.checked && cb.value !== 'all')
-        .map(cb => cb.value);
-    
-    if (selectedCategories.length > 0) {
-        filtered = filtered.filter(p => selectedCategories.includes(p.category));
-    }
-    
-    // Price filter
-    const priceRange = document.getElementById('priceRange');
-    if (priceRange) {
-        const maxPrice = parseInt(priceRange.value);
-        const priceValue = document.getElementById('priceValue');
-        if (priceValue) {
-            priceValue.textContent = maxPrice;
-        }
-        filtered = filtered.filter(p => p.price <= maxPrice);
-    }
-    
-    // Sorting
-    const sortSelect = document.getElementById('sortSelect');
-    if (sortSelect) {
-        const sortValue = sortSelect.value;
-        
-        switch(sortValue) {
-            case 'price-low':
-                filtered.sort((a, b) => a.price - b.price);
-                break;
-            case 'price-high':
-                filtered.sort((a, b) => b.price - a.price);
-                break;
-            case 'rating':
-                filtered.sort((a, b) => b.rating - a.rating);
-                break;
-            case 'newest':
-            default:
-                filtered.sort((a, b) => b.id - a.id);
-        }
-    }
-    
+    const checkboxes = [...document.querySelectorAll('.filter-group input[type="checkbox"]')];
+    const selected = checkboxes.filter(cb => cb.checked && cb.value !== 'all').map(cb => cb.value);
+    if (selected.length) filtered = filtered.filter(p => selected.includes(p.category));
+    const q = new URLSearchParams(location.search).get('q') || document.getElementById('siteSearch')?.value || '';
+    const normalized = q.trim().toLocaleLowerCase();
+    if (normalized) filtered = filtered.filter(p => [p.name,p.category,p.description].some(value => value.toLocaleLowerCase().includes(normalized)));
+    const range = document.getElementById('priceRange');
+    if (range) { const max = Number(range.value); const label = document.getElementById('priceValue'); if (label) label.textContent = max.toLocaleString(); filtered = filtered.filter(p => p.price <= max); }
+    const sort = document.getElementById('sortSelect')?.value;
+    if (sort === 'price-low') filtered.sort((a,b)=>a.price-b.price);
+    else if (sort === 'price-high') filtered.sort((a,b)=>b.price-a.price);
+    else if (sort === 'rating') filtered.sort((a,b)=>b.rating-a.rating);
+    else filtered.sort((a,b)=>b.id-a.id);
     filteredProducts = filtered;
+    const status = document.getElementById('searchStatus');
+    if (status) status.textContent = normalized ? `Showing results for “${q.trim()}”` : '';
 }
 
 function filterProducts() {
@@ -447,105 +384,37 @@ function filterProducts() {
 function renderCart() {
     const container = document.getElementById('cartItemsContainer');
     if (!container) return;
-    
-    if (cart.length === 0) {
-        container.innerHTML = `
-            <div class="cart-empty">
-                <i class="fas fa-shopping-cart"></i>
-                <h3>Your cart is empty</h3>
-                <p>Add some beautiful charms to get started!</p>
-                <a href="shop.html" class="btn-primary" style="margin-top: 20px; display: inline-block;">Start Shopping</a>
-            </div>
-        `;
-        updateCartSummary();
-        return;
+    if (!cart.length) {
+      container.innerHTML = '<div class="cart-empty"><span class="empty-bag" aria-hidden="true">♡</span><h3>Your bag is waiting</h3><p>Browse keychains and phone charms to get started.</p><a href="shop.html" class="btn-primary">Explore the shop</a></div>';
+      updateCartSummary(); return;
     }
-    
     container.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <div class="cart-item-image">
-                <i class="fas fa-sparkles"></i>
-            </div>
-            <div class="cart-item-details">
-                <h3>${item.name}</h3>
-                <p>${item.category}</p>
-                <div class="cart-item-price">${formatPrice(item.price)}</div>
-                <div class="quantity-control">
-                    <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">−</button>
-                    <input type="number" value="${item.quantity}" readonly>
-                    <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                </div>
-            </div>
-            <div>
-                <p style="font-weight: 700; margin-bottom: 10px; animation: fadeInUp 0.4s ease;">${formatPrice(item.price * item.quantity)}</p>
-                <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
-            </div>
-        </div>
-    `).join('');
-    
+      <article class="cart-item"><div class="cart-item-image" aria-hidden="true"><span>${item.category === 'keychains' ? '⌁' : '✳'}</span></div>
+      <div class="cart-item-details"><h3>${item.name}</h3><p>${item.category === 'phone-charms' ? 'Phone charm' : 'Keychain'}</p><div class="cart-item-price">${formatPrice(item.price)}</div>
+       <div class="quantity-control"><button type="button" aria-label="Remove one ${item.name}" onclick="updateQuantity(${item.id},${item.quantity-1})">−</button><span aria-live="polite">${item.quantity}</span><button type="button" aria-label="Add one ${item.name}" onclick="updateQuantity(${item.id},${item.quantity+1})">+</button></div></div>
+      <div class="cart-item-actions"><p>${formatPrice(item.price*item.quantity)}</p><button class="remove-btn" type="button" onclick="removeFromCart(${item.id})" aria-label="Remove ${item.name}">Remove</button></div></article>`).join('');
     updateCartSummary();
 }
 
 function updateCartSummary() {
     const subtotal = getCartTotal();
-    const shipping = subtotal > 5000 ? 0 : 300;
-    const tax = 0;
-    const total = subtotal + shipping + tax;
-    
-    const subtotalEl = document.getElementById('subtotal');
-    const shippingEl = document.getElementById('shipping');
-    const taxEl = document.getElementById('tax');
-    const totalEl = document.getElementById('total');
-    
+    const subtotalEl = document.getElementById('subtotal'), shippingEl = document.getElementById('shipping'), taxEl = document.getElementById('tax'), totalEl = document.getElementById('total');
     if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
-    if (shippingEl) shippingEl.textContent = shipping === 0 ? 'Free' : formatPrice(shipping);
-    if (taxEl) taxEl.textContent = formatPrice(tax);
-    if (totalEl) totalEl.textContent = formatPrice(total);
+    if (shippingEl) shippingEl.textContent = 'Confirm by email';
+    if (taxEl) taxEl?.closest('.summary-row')?.remove();
+    if (totalEl) totalEl.textContent = formatPrice(subtotal);
 }
 
 // ========== CHECKOUT & PROMO ==========
 
 function checkout() {
-    if (cart.length === 0) {
-        showNotification('Your cart is empty!', 'error');
-        return;
-    }
-    
-    const total = getCartTotal();
-    showNotification(`✓ Order placed!\n\nTotal: ${formatPrice(total)}`, 'success');
-    
-    // In production, redirect to payment gateway
-    setTimeout(() => {
-        cart = [];
-        saveCart();
-        window.location.href = 'index.html';
-    }, 2000);
+    if (!cart.length) { showNotification('Your bag is empty. Add an item first.', 'error'); return; }
+    const lines = cart.map(item => `• ${item.name} × ${item.quantity} — PKR ${(item.price*item.quantity).toLocaleString()}`).join('%0D%0A');
+    const body = `Hello Catene.pk,%0D%0A%0D%0AI’d like to ask about:%0D%0A${lines}%0D%0A%0D%0AItem subtotal: PKR ${getCartTotal().toLocaleString()}%0D%0APlease confirm availability, delivery charges and payment options.`;
+    window.location.href = `mailto:maheenramzan13@gmail.com?subject=Catene.pk%20order%20enquiry&body=${body}`;
 }
 
-function applyPromo() {
-    const promoCode = document.getElementById('promoCode').value.toUpperCase().trim();
-    
-    if (!promoCode) {
-        showNotification('Please enter a promo code', 'error');
-        return;
-    }
-    
-    if (promoCode === 'WELCOME10') {
-        showNotification('✓ Promo code applied! 10% discount', 'success');
-        const discountedTotal = getCartTotal() * 0.9;
-        const totalEl = document.getElementById('total');
-        if (totalEl) totalEl.textContent = formatPrice(discountedTotal);
-    } else if (promoCode === 'SAVE20') {
-        showNotification('✓ Promo code applied! 20% discount', 'success');
-        const discountedTotal = getCartTotal() * 0.8;
-        const totalEl = document.getElementById('total');
-        if (totalEl) totalEl.textContent = formatPrice(discountedTotal);
-    } else {
-        showNotification('✗ Invalid promo code', 'error');
-    }
-    
-    document.getElementById('promoCode').value = '';
-}
+function applyPromo() {}
 
 // ========== UTILITIES ==========
 
@@ -575,30 +444,9 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-function toggleWishlist(e) {
-    const btn = e.target.closest('.btn-wishlist');
-    if (!btn) return;
-    
-    btn.classList.toggle('active');
-    const icon = btn.querySelector('i');
-    
-    if (btn.classList.contains('active')) {
-        icon.classList.remove('far');
-        icon.classList.add('fas');
-        showNotification('❤ Added to Wishlist!', 'success');
-    } else {
-        icon.classList.remove('fas');
-        icon.classList.add('far');
-        showNotification('Removed from Wishlist', 'success');
-    }
-}
+function toggleWishlist() {}
 
-function handleNewsletter(e) {
-    e.preventDefault();
-    const email = e.target.querySelector('input[type="email"]').value;
-    showNotification(`✓ Thank you for subscribing with ${email}!`, 'success');
-    e.target.reset();
-}
+function handleNewsletter(e) { e.preventDefault(); showNotification('Email updates are not set up yet. Please contact us by email.', 'error'); }
 
 // Add animation styles dynamically
 const style = document.createElement('style');
@@ -630,3 +478,50 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+/* Birthday greeting configuration: edit only this object after confirming the date.
+   month uses 1–12. day and month intentionally remain unset. */
+const birthdayConfig = { day: null, month: null, firstCelebrationYear: 2027, timeZone: 'Asia/Karachi', message: 'Happy birthday! A little love from Catene.pk.' };
+function isValidBirthday(day, month) {
+  if (!Number.isInteger(day) || !Number.isInteger(month) || month < 1 || month > 12 || day < 1) return false;
+  return day <= new Date(Date.UTC(2000, month, 0)).getUTCDate();
+}
+function getLahoreDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+  const part = key => Number(parts.find(item => item.type === key)?.value);
+  return { year: part('year'), month: part('month'), day: part('day') };
+}
+function maybeShowBirthdayGreeting(now = new Date()) {
+  const { day, month, firstCelebrationYear } = birthdayConfig;
+  if (!isValidBirthday(day, month)) return false;
+  const local = getLahoreDate(now);
+  if (local.year < firstCelebrationYear || local.day !== day || local.month !== month) return false;
+  const key = `catene_birthday_seen_${local.year}`;
+  if (sessionStorage.getItem(key)) return false;
+  const toast = document.getElementById('birthdayGreeting');
+  if (!toast) return false;
+  toast.textContent = birthdayConfig.message;
+  toast.hidden = false;
+  sessionStorage.setItem(key, '1');
+  return true;
+}
+function setupStorefrontExtras() {
+  const query = new URLSearchParams(location.search).get('q');
+  if (query) { const field = document.getElementById('siteSearch'); if (field) field.value = query; }
+  maybeShowBirthdayGreeting();
+}
+function toggleSearch() {
+  const panel = document.getElementById('searchPanel'), button = document.querySelector('.search-btn');
+  if (!panel) return;
+  panel.hidden = !panel.hidden; button?.setAttribute('aria-expanded', String(!panel.hidden));
+  if (!panel.hidden) document.getElementById('siteSearch')?.focus();
+}
+function toggleMenu() {
+  const nav = document.getElementById('siteNav'), button = document.querySelector('.menu-toggle');
+  if (!nav) return;
+  const open = nav.classList.toggle('is-open'); button?.setAttribute('aria-expanded', String(open));
+  button?.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+}
+function toggleLuna() {
+  const note = document.getElementById('lunaNote');
+  if (note) note.hidden = !note.hidden;
+}
