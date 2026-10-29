@@ -472,7 +472,7 @@ function isValidBirthday(day, month) {
   return day <= new Date(Date.UTC(2000, month, 0)).getUTCDate();
 }
 function getLahoreDate(date = new Date()) {
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: birthdayConfig.timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
   const part = key => Number(parts.find(item => item.type === key)?.value);
   return { year: part('year'), month: part('month'), day: part('day') };
 }
