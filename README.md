@@ -41,3 +41,7 @@ Luna is a small inline SVG illustration with a subtle idle motion and a click-to
 ## Local verification
 
 There is no package manifest, build script, or test setup in this repository. The pages can be previewed by opening `index.html`; GitHub Pages can serve the static files directly.
+
+## License
+
+MIT License
