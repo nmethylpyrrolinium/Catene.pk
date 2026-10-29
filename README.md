@@ -34,6 +34,10 @@ const birthdayConfig = {
 
 After the date is confirmed, replace `null` for `day` (1–31) and `month` (1–12). The date is validated, including February 29. The greeting appears only on that Lahore calendar date from 2027 onward, while a visitor uses the site. A session guard prevents it from appearing repeatedly during the same visit. Until both values are set, birthday mode stays inactive.
 
+## Interactive 3D-style hero charm
+
+The hero charm uses layered CSS 3D transforms and shadows. It tilts with pointer movement and turns on activation; it is a CSS illustration, not a scanned/WebGL model. It uses no 3D library, external model, or extra network request.
+
 ## Luna Tuna
 
 Luna is a small inline SVG illustration with a subtle idle motion and a click-to-greet note. No 3D model or external model asset is included, and no audio is used. Reduced-motion preferences are respected.
