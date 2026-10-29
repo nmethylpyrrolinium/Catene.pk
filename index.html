@@ -3,47 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catene.pk - Premium Charms & Keychains</title>
+    <title>Catene.pk | Keychains & Phone Charms</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Browse Catene.pk keychains and phone charms. Based in Lahore, Pakistan."><meta name="theme-color" content="#00777f">
 </head>
 <body>
     <!-- Header/Navigation -->
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="https://ibb.co/7tzpc8CR" alt="Catene.pk Logo" class="logo-img">
-                    <span class="brand-name">Catene.pk</span>
-                </div>
-                <nav class="nav">
-                    <a href="#home" class="nav-link">Home</a>
-                    <a href="shop.html" class="nav-link">Shop</a>
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#contact" class="nav-link">Contact</a>
-                </nav>
-                <div class="header-actions">
-                    <button class="search-btn" title="Search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <div class="currency-selector">
-                        <select id="currencySelect" onchange="changeCurrency()">
-                            <option value="PKR">PKR</option>
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                        </select>
-                    </div>
-                    <a href="cart.html" class="cart-icon-link">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge" id="cartCount">0</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+  <div class="container header-content">
+   <a class="logo" href="index.html" aria-label="Catene.pk home"><span class="brand-name">Catene.pk</span></a>
+   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu" onclick="toggleMenu()">☰</button>
+   <nav class="nav" id="siteNav" aria-label="Main navigation">
+    <a href="#home" class="nav-link" aria-current="page">Home</a>
+    <a href="shop.html" class="nav-link">Shop</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#contact" class="nav-link">Contact</a>
+   </nav>
+   <div class="header-actions">
+    <button class="search-btn" type="button" aria-label="Open product search" aria-expanded="false" aria-controls="searchPanel" onclick="toggleSearch()">⌕</button>
+    <label class="currency-selector"><span class="sr-only">Display currency</span><select id="currencySelect" onchange="changeCurrency()"><option value="PKR">PKR</option><option value="USD">USD</option><option value="EUR">EUR</option></select></label>
+    <a href="cart.html" class="cart-icon-link" aria-label="Shopping cart"><span aria-hidden="true">Bag</span><span class="cart-badge" id="cartCount">0</span></a>
+   </div>
+  </div>
+  <form class="search-panel" id="searchPanel" action="shop.html" hidden>
+   <label for="siteSearch">Find a keychain or phone charm</label><div><input type="search" id="siteSearch" name="q" placeholder="Search the collection"><button class="btn-primary" type="submit">Search</button></div>
+  </form>
+ </header>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -51,13 +40,13 @@
         <div class="container">
             <div class="hero-wrapper">
                 <div class="hero-text">
-                    <h1 class="hero-title">Elevate Your <span class="highlight">Style</span></h1>
-                    <p class="hero-subtitle">Premium handcrafted charms & keychains with Arabian elegance</p>
+                    <h1 class="hero-title">A little something <span class="highlight">to carry</span></h1>
+                    <p class="hero-subtitle">Keychains and phone charms, made to add a little personality to your everyday.</p>
                     <a href="shop.html" class="btn-primary btn-hero">Shop Now</a>
                 </div>
                 <div class="hero-image-wrapper">
                     <div class="floating-charm">
-                        <i class="fas fa-gem"></i>
+                        <span aria-hidden="true">✦</span>
                     </div>
                 </div>
             </div>
@@ -83,100 +72,34 @@
             <div class="about-content">
                 <div class="about-image">
                     <div class="placeholder-image">
-                        <i class="fas fa-heart"></i>
+                        <span aria-hidden="true">♡</span>
                     </div>
                 </div>
                 <div class="about-text">
                     <h2>About <span class="highlight">Catene.pk</span></h2>
-                    <p>Catene.pk specializes in exquisite, handcrafted charms and keychains inspired by Arabian and Persian aesthetics. Each piece is designed with meticulous attention to detail, blending traditional craftsmanship with contemporary elegance.</p>
-                    <p>Our collection celebrates the beauty of geometric patterns, luxurious materials, and timeless designs that tell a story.</p>
-                    <ul class="features-list">
-                        <li><i class="fas fa-check"></i> Handcrafted with premium materials</li>
-                        <li><i class="fas fa-check"></i> Inspired by Arabian & Persian design</li>
-                        <li><i class="fas fa-check"></i> Sustainable & ethical production</li>
-                        <li><i class="fas fa-check"></i> Free shipping on orders over 5000 PKR</li>
-                    </ul>
+                    <p>Catene.pk is a Lahore-based shop for keychains and phone charms.</p>
+                    
+                    <p>Browse keychains and phone charms in the shop.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2 class="section-title">Get in <span class="highlight">Touch</span></h2>
-            <div class="contact-content">
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                    <div>
-                        <h3>Location</h3>
-                        <p>Karachi, Pakistan</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div>
-                        <h3>Email</h3>
-                        <p>info@catene.pk</p>
-                    </div>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fas fa-phone"></i>
-                    </div>
-                    <div>
-                        <h3>Phone</h3>
-                        <p>+92 (XXX) XXX-XXXX</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <section class="contact" id="contact"><div class="container"><h2 class="section-title">Get in <span class="highlight">Touch</span></h2><div class="contact-content">
+<div class="contact-item"><div class="contact-icon" aria-hidden="true">⌖</div><div><h3>Location</h3><p>Lahore, Pakistan</p></div></div>
+<div class="contact-item"><div class="contact-icon" aria-hidden="true">✉</div><div><h3>Email</h3><p><a href="mailto:maheenramzan13@gmail.com">maheenramzan13@gmail.com</a></p></div></div>
+</div></div></section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Catene.pk</h4>
-                    <p>Premium charms & keychains with Arabian elegance</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="shop.html">Shop</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Follow Us</h4>
-                    <div class="social-links">
-                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" title="Pinterest"><i class="fab fa-pinterest"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-                        <input type="email" placeholder="Your email" required>
-                        <button type="submit">Subscribe</button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Catene.pk. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container footer-content">
+ <div class="footer-section"><a href="index.html" class="brand-name">Catene.pk</a><p>Keychains and phone charms.</p><p>Lahore, Pakistan</p></div>
+ <div class="footer-section"><h4>Explore</h4><ul><li><a href="shop.html">Shop the collection</a></li><li><a href="index.html#about">About</a></li><li><a href="index.html#contact">Contact</a></li><li><a href="cart.html">Your bag</a></li></ul></div>
+ <div class="footer-section"><h4>Questions?</h4><a href="mailto:maheenramzan13@gmail.com">maheenramzan13@gmail.com</a></div>
+ </div><div class="container footer-bottom"><p>© 2026 Catene.pk</p></div></footer>
 
-    <script src="script.js"></script>
+
+
+    <div class="luna-wrap"><button class="luna" type="button" onclick="toggleLuna()" aria-label="Say hello to Luna Tuna"><svg viewBox="0 0 100 90" role="img" aria-label="Illustration of Luna Tuna, a fluffy white Persian cat"><path class="cat-ear" d="M16 33 13 7q0-6 7-2l19 18m25 0L83 5q7-4 7 3l-4 27"/><path class="cat-head" d="M12 43Q15 15 50 16t38 27q9 35-13 38-25 22-50 0Q5 76 12 43Z"/><path class="cat-eye" d="M31 48q5-7 10 0m18 0q5-7 10 0"/><path class="cat-nose" d="m46 55 4 3 4-3-4-2zM50 58v4m0 0q-5 5-9 0m9 0q5 5 9 0"/><path class="cat-whisker" d="m37 58-20-4m20 8-19 3m45-7 20-4m-20 8 19 3"/></svg><span class="luna-label">Luna</span></button><span class="luna-note" id="lunaNote" hidden>Hi, I’m Luna Tuna 🐾</span></div><div class="birthday-toast" id="birthdayGreeting" role="status" aria-live="polite" hidden></div><script src="script.js"></script>
 </body>
 </html>
