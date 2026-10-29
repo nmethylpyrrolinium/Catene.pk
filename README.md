@@ -14,7 +14,7 @@ This site uses plain HTML, CSS, and JavaScript so it can be hosted on GitHub Pag
 
 ## Shopping behavior
 
-The bag is stored in this browser's local storage. The catalog and PKR prices are maintained in `script.js`. USD and EUR display values use the fixed indicative rates in that file; they are display conversions only, are not live exchange rates, and checkout enquiries state the item subtotal in PKR.
+The bag is stored in this browser's local storage. The existing sample catalog and PKR prices are maintained in `script.js`; verify products and prices against actual stock before accepting orders. USD and EUR display values use the fixed indicative rates in that file; they are display conversions only, are not live exchange rates, and checkout enquiries state the item subtotal in PKR.
 
 There is no payment gateway or order service configured. “Ask about your order” opens an email draft addressed to maheenramzan13@gmail.com; the visitor must review and send it. Shipping, availability, and payment options must be confirmed by email. The site does not submit newsletter subscriptions.
 
