@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <meta name="description" content="Browse Catene.pk keychains and phone charms. Based in Lahore, Pakistan."><meta name="theme-color" content="#00777f">
+    <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+    </script>
 </head>
 <body>
     <!-- Header/Navigation -->
@@ -63,9 +66,9 @@
                     </div>
                     <p class="luna-world-status" id="luna3dStatus" role="status" aria-live="polite">Luna’s little world is waking up…</p>
                     <div class="luna-world-controls" aria-label="Luna scene controls">
-                        <button type="button" aria-label="Turn Luna left" onclick="rotateLuna3D(-0.65)">←</button>
-                        <button type="button" id="luna3dMotionButton" aria-pressed="true" onclick="toggleLuna3DMotion()">Pause Luna</button>
-                        <button type="button" aria-label="Turn Luna right" onclick="rotateLuna3D(0.65)">→</button>
+                        <button type="button" aria-label="Turn Luna left" disabled onclick="rotateLuna3D(-0.65)">←</button>
+                        <button type="button" id="luna3dMotionButton" disabled aria-pressed="true" onclick="toggleLuna3DMotion()">Pause Luna</button>
+                        <button type="button" aria-label="Turn Luna right" disabled onclick="rotateLuna3D(0.65)">→</button>
                     </div>
                     <p class="luna-world-hint">Drag to explore · tap Luna for a little bounce</p>
                 </div>
