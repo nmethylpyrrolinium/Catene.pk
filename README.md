@@ -1,150 +1,43 @@
 # Catene.pk
 
-demo e commerce website for keychains and charms
+A static storefront for Catene.pk, a keychain and phone charm shop based in Lahore, Pakistan.
 
----
+## Pages and technology
 
-## Technical Overview
+This site uses plain HTML, CSS, and JavaScript so it can be hosted on GitHub Pages without a server or build step.
 
-this project is built using a pure frontend architecture (HTML, CSS, JavaScript) without any framework.  
+- `index.html`: introduction and featured products
+- `shop.html`: catalog, search, category and price filters, and sorting
+- `cart.html`: local shopping bag and an email order enquiry
+- `style.css`: responsive styling; the existing Poppins, Great Vibes, teal (`#00777f`) and gold accents are retained
+- `script.js`: catalog data, cart state, display currency, and birthday configuration
 
-The application handles product rendering, filtering, and cart management entirely on the client side.
+## Shopping behavior
 
----
+The bag is stored in this browser's local storage. The catalog and PKR prices are maintained in `script.js`. USD and EUR display values use the fixed indicative rates in that file; they are display conversions only, are not live exchange rates, and checkout enquiries state the item subtotal in PKR.
 
-## Core Features
+There is no payment gateway or order service configured. “Ask about your order” opens an email draft addressed to maheenramzan13@gmail.com; the visitor must review and send it. Shipping, availability, and payment options must be confirmed by email. The site does not submit newsletter subscriptions.
 
-- Dynamic product rendering using JavaScript
-- Category-based filtering system
-- Price range filtering (range slider)
-- Sorting (price, rating, newest)
-- Real-time cart system
-- Promo code handling
-- Currency selector 
-- Fully responsive layout
-- Advanced UI animations and transitions
+## Birthday greeting
 
----
+The reusable birthday settings are in one place near the bottom of `script.js`:
 
-## Architecture & Workflow
+```js
+const birthdayConfig = {
+  day: null,
+  month: null,
+  firstCelebrationYear: 2027,
+  timeZone: 'Asia/Karachi',
+  message: 'Happy birthday! A little love from Catene.pk.'
+};
+```
 
-### 1. Rendering System
-- Product data is managed in JavaScript
-- Products are injected into the DOM dynamically
-- Separate sections for:
-  - Featured products (`index.html`)
-  - Shop products (`shop.html`)
+After the date is confirmed, replace `null` for `day` (1–31) and `month` (1–12). The date is validated, including February 29. The greeting appears only on that Lahore calendar date from 2027 onward, while a visitor uses the site. A session guard prevents it from appearing repeatedly during the same visit. Until both values are set, birthday mode stays inactive.
 
----
+## Luna Tuna
 
-### 2. Filtering & Sorting System
-- Category filters via checkboxes
-- Price filtering via range input
-- Sorting controlled via dropdown
-- All filters trigger a re-render of product grid
+Luna is a small inline SVG illustration with a subtle idle motion and a click-to-greet note. No 3D model or external model asset is included, and no audio is used. Reduced-motion preferences are respected.
 
----
+## Local verification
 
-### 3. Cart System
-
-- Central cart state managed in JavaScript
-- Stored and updated dynamically
-- Features:
-  - Add to cart
-  - Remove item
-  - Quantity control
-  - Price calculation (subtotal, total)
-  - Promo code logic
-
-Cart UI is rendered in:
-- `cart.html`
-
----
-
-### 4. UI / Animation Layer
-
-The UI is heavily enhanced using CSS:
-
-- Custom properties (CSS variables) for design system 0  
-- Keyframe animations:
-  - fadeInUp
-  - slideIn / slideOut
-  - floating elements
-  - glow & pulse effects 1  
-
-- Micro-interactions:
-  - Button press effects
-  - Hover scaling
-  - Cart badge animation
-
----
-
-### 5. Multi-Page Structure
-
-- `index.html` → Landing + featured products 2  
-- `shop.html` → Product listing + filters 3  
-- `cart.html` → Cart management + checkout UI 4  
-
----
-
-## Tech Stack
-
-- HTML5
-- CSS3 (Advanced styling + animations)
-- JavaScript (Vanilla)
-
-External:
-- Google Fonts (Poppins, Great Vibes)
-- Font Awesome (icons)
-
----
-
-## Project Structure
-Keychains-and-charm-website/ │── index.html        # Landing page + featured products │── shop.html         # Shop page with filters & product grid │── cart.html         # Cart page with summary & checkout UI │── style.css         # Full UI system + animations │── script.js         # Core logic (products, cart, filters) │── README.md 
----
-
-## Data Flow
-
-1. Product data defined in JavaScript  
-2. Rendered into DOM (products grid)  
-3. User interactions trigger functions:
-   - filterProducts()
-   - addToCart()
-   - updateCart()
-4. Cart state updates  
-5. UI re-renders dynamically  
-
----
-
-## Design System
-
-- CSS variables for colors, spacing, shadows
-- Gradient-based theme
-- Consistent typography system
-- Reusable component styles (buttons, cards, layout)
-
----
-
-## Future Improvements
-
-- LocalStorage for persistent cart
-- Backend integration (Node.js / API)
-- Authentication system
-- Payment gateway (Stripe / Razorpay)
-- Product search system
-- Admin dashboard
-- API-based product management
-
----
-
-## Development Notes
-
-- Fully frontend-based architecture
-- Easily extendable to full-stack
-or readability and modular expansion
-
----
-
-## License
-
-MIT License
+There is no package manifest, build script, or test setup in this repository. The pages can be previewed by opening `index.html`; GitHub Pages can serve the static files directly.
