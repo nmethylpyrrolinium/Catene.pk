@@ -375,8 +375,8 @@ function applyFilters() {
     if (status) status.textContent = normalized ? `Showing results for “${q.trim()}”` : '';
 }
 
-function filterProducts() {
-    const changed = event?.target;
+function filterProducts(e) {
+    const changed = e?.target;
     const boxes = [...document.querySelectorAll('.filter-group input[type="checkbox"]')];
     const all = boxes.find(cb => cb.value === 'all');
     if (changed?.value === 'all' && changed.checked) boxes.filter(cb => cb !== all).forEach(cb => cb.checked = false);
