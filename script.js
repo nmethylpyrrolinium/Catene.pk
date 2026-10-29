@@ -376,6 +376,13 @@ function applyFilters() {
 }
 
 function filterProducts() {
+    const changed = event?.target;
+    const boxes = [...document.querySelectorAll('.filter-group input[type="checkbox"]')];
+    const all = boxes.find(cb => cb.value === 'all');
+    if (changed?.value === 'all' && changed.checked) boxes.filter(cb => cb !== all).forEach(cb => cb.checked = false);
+    else if (changed?.value !== 'all' && changed?.checked) { if (all) all.checked = false; }
+    const selected = boxes.some(cb => cb.checked && cb.value !== 'all');
+    if (all && !selected && !boxes.some(cb => cb.checked)) all.checked = true;
     renderShopProducts();
 }
 
