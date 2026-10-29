@@ -10,8 +10,6 @@ const products = [
         name: "Pearl Crescent",
         category: "phone-charms",
         price: 1500,
-        rating: 5,
-        reviews: 48,
         description: "Elegant pearl-adorned crescent charm with golden accents",
         badge: "New"
     },
@@ -20,8 +18,6 @@ const products = [
         name: "Golden Geometric",
         category: "keychains",
         price: 1200,
-        rating: 4.5,
-        reviews: 32,
         description: "Modern geometric design with luxury gold finish",
         badge: ""
     },
@@ -30,8 +26,6 @@ const products = [
         name: "Turquoise Tassel",
         category: "phone-charms",
         price: 1800,
-        rating: 5,
-        reviews: 56,
         description: "Vibrant turquoise with ornate tassel detailing",
         badge: "Best Seller"
     },
@@ -40,8 +34,6 @@ const products = [
         name: "Persian Floral",
         category: "keychains",
         price: 1400,
-        rating: 4,
-        reviews: 24,
         description: "Intricate Persian floral pattern in premium material",
         badge: ""
     },
@@ -50,8 +42,6 @@ const products = [
         name: "Diamond Star",
         category: "phone-charms",
         price: 2000,
-        rating: 5,
-        reviews: 72,
         description: "Sparkling star charm with cubic zirconia stones",
         badge: "Limited"
     },
@@ -60,8 +50,6 @@ const products = [
         name: "Bronze Spiral",
         category: "keychains",
         price: 1300,
-        rating: 4.5,
-        reviews: 40,
         description: "Antique bronze spiral design with protective coating",
         badge: ""
     },
@@ -70,8 +58,6 @@ const products = [
         name: "Emerald Lotus",
         category: "phone-charms",
         price: 1900,
-        rating: 5,
-        reviews: 61,
         description: "Stunning emerald-colored lotus with pearl center",
         badge: "New"
     },
@@ -80,8 +66,6 @@ const products = [
         name: "Silver Arabesque",
         category: "keychains",
         price: 1600,
-        rating: 4.5,
-        reviews: 35,
         description: "Delicate silver arabesque pattern, lightweight",
         badge: ""
     },
@@ -90,8 +74,6 @@ const products = [
         name: "Ruby Heart Charm",
         category: "phone-charms",
         price: 2200,
-        rating: 5,
-        reviews: 88,
         description: "Deep red ruby heart charm perfect for charm bracelets",
         badge: "Best Seller"
     },
@@ -100,8 +82,6 @@ const products = [
         name: "Sapphire Moon",
         category: "keychains",
         price: 1700,
-        rating: 4,
-        reviews: 28,
         description: "Celestial moon design with sapphire-blue crystal",
         badge: ""
     },
@@ -110,8 +90,6 @@ const products = [
         name: "Golden Filigree",
         category: "phone-charms",
         price: 1950,
-        rating: 5,
-        reviews: 52,
         description: "Intricate filigree goldwork with traditional craftsmanship",
         badge: ""
     },
@@ -120,8 +98,6 @@ const products = [
         name: "Turquoise Hamsa",
         category: "keychains",
         price: 1450,
-        rating: 4.5,
-        reviews: 42,
         description: "Protective hamsa hand with turquoise center stone",
         badge: "New"
     }
@@ -368,7 +344,6 @@ function applyFilters() {
     const sort = document.getElementById('sortSelect')?.value;
     if (sort === 'price-low') filtered.sort((a,b)=>a.price-b.price);
     else if (sort === 'price-high') filtered.sort((a,b)=>b.price-a.price);
-    else if (sort === 'rating') filtered.sort((a,b)=>b.rating-a.rating);
     else filtered.sort((a,b)=>b.id-a.id);
     filteredProducts = filtered;
     const status = document.getElementById('searchStatus');
