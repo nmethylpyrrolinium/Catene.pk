@@ -1779,3 +1779,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
  .filters-sidebar { position:static; top:auto; display:grid; grid-template-columns:1fr 1fr; gap:12px; }.filter-section { margin:0; padding:0 0 12px; }.cart-item { grid-template-columns:74px minmax(0,1fr) auto; gap:12px; padding:14px; }.cart-item-image { width:74px; height:74px; }.cart-item-actions { grid-column:3; }
 }
 @media(max-width:420px) { .brand-name { font-size:1.05rem; }.header-actions { gap:5px; }.cart-icon-link>span:first-child { display:none; }.products-grid { gap:9px; }.product-image { min-height:130px; }.product-info { padding:11px; }.product-name { font-size:.92rem; }.product-description { font-size:.78rem; }.filters-sidebar { grid-template-columns:1fr; }.cart-item { grid-template-columns:62px minmax(0,1fr); }.cart-item-image { width:62px; height:62px; }.cart-item-actions { grid-column:2; display:flex; justify-content:space-between; align-items:center; }.luna-wrap { right:10px; bottom:10px; }.luna { width:60px; height:64px; }.luna svg { width:39px; height:40px; } }
+
+
+/* Interactive CSS 3D hero charm — self-contained and static-hosting friendly. */
+.charm-scene { position:relative; display:grid; place-items:center; width:min(100%,390px); height:390px; margin:auto; padding:0; border:0; background:transparent; color:inherit; cursor:grab; perspective:1000px; perspective-origin:50% 45%; }
+.charm-scene:active { cursor:grabbing; }
+.charm-object { position:relative; width:220px; height:330px; transform-style:preserve-3d; transform:rotateX(calc(var(--tilt-x,0deg) + 5deg)) rotateY(calc(var(--tilt-y,0deg) + var(--turn,0deg))) rotateZ(-7deg); transition:transform .24s cubic-bezier(.2,.7,.2,1); filter:drop-shadow(0 24px 16px #17383a24); }
+.charm-ring { position:absolute; z-index:3; left:68px; top:5px; width:84px; height:98px; border:11px solid #d4af37; border-left-color:#f1d879; border-bottom-color:#a7801f; border-radius:50%; transform:rotateX(62deg) translateZ(7px); box-shadow:inset 2px 1px 2px #fff8,0 5px 3px #6b531d36; }
+.charm-link { position:absolute; left:98px; top:61px; width:24px; height:42px; border:7px solid #d4af37; border-top-color:#f1d879; border-radius:50%; transform:rotateX(35deg) translateZ(12px); }
+.charm-bead { position:absolute; left:96px; top:93px; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle at 32% 25%,#fff3bf 0 8%,#e8c356 28%,#9a741b 72%,#f0d57e 100%); transform:translateZ(25px); box-shadow:0 5px 10px #17383a35; }
+.charm-medallion { position:absolute; left:33px; top:113px; width:154px; height:153px; display:grid; place-items:center; border-radius:46% 46% 48% 48%; background:linear-gradient(135deg,#21a0a4,#00656c 52%,#004b53); transform:translateZ(20px); box-shadow:inset 7px 5px 9px #ffffff35,inset -9px -10px 12px #003f468c,0 12px 20px #003f4633; }
+.charm-medallion::before { content:""; position:absolute; inset:8px; border:2px solid #e6c65e; border-radius:44% 44% 48% 48%; transform:translateZ(7px); box-shadow:inset 0 0 0 3px #00656c,0 0 0 1px #fff5; }
+.charm-medallion::after { content:""; position:absolute; inset:17px; border:1px solid #f5dc8c99; border-radius:42% 42% 48% 48%; transform:translateZ(11px); }
+.charm-face { position:relative; z-index:1; color:#f5dc8c; font-size:4.7rem; line-height:1; text-shadow:1px 2px 0 #8b6817,0 0 14px #f5dc8c70; transform:translateZ(16px); }
+.charm-tassel { position:absolute; left:66px; top:248px; z-index:1; display:flex; gap:4px; height:72px; padding-top:8px; transform:translateZ(4px); }
+.charm-tassel i { display:block; width:8px; height:63px; border-radius:2px 2px 8px 8px; background:linear-gradient(90deg,#b79330,#f3d875 45%,#aa8425); transform-origin:top; box-shadow:1px 2px 3px #17383a33; }
+.charm-tassel i:nth-child(2),.charm-tassel i:nth-child(4) { height:54px; }
+.charm-caption { position:absolute; bottom:9px; color:#68777a; font:500 .78rem 'Poppins',sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+.charm-scene:hover .charm-object,.charm-scene:focus-visible .charm-object { transition-duration:.12s; }
+.charm-scene.is-turned { --turn:145deg; }
+@media(max-width:760px) { .charm-scene { height:330px; max-width:330px; } .charm-object { transform:scale(.85) rotateX(calc(var(--tilt-x,0deg) + 5deg)) rotateY(calc(var(--tilt-y,0deg) + var(--turn,0deg))) rotateZ(-7deg); } }
+@media(max-width:420px) { .charm-scene { height:290px; max-width:290px; } .charm-object { transform:scale(.72) rotateX(calc(var(--tilt-x,0deg) + 5deg)) rotateY(calc(var(--tilt-y,0deg) + var(--turn,0deg))) rotateZ(-7deg); } }
+@media(prefers-reduced-motion:reduce) { .charm-object { transition:none!important; } .charm-scene:hover .charm-object,.charm-scene:focus-visible .charm-object { transition:none!important; } }
