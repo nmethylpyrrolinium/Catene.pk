@@ -492,6 +492,7 @@ function maybeShowBirthdayGreeting(now = new Date()) {
 }
 function setupStorefrontExtras() {
   setupCharmInteraction();
+  setupLuna3D();
   const query = new URLSearchParams(location.search).get('q');
   if (query) { const field = document.getElementById('siteSearch'); if (field) field.value = query; }
   maybeShowBirthdayGreeting();
@@ -533,4 +534,228 @@ function setupCharmInteraction() {
     charm.style.setProperty('--tilt-x', '0deg');
     charm.style.setProperty('--tilt-y', '0deg');
   });
+}
+
+let luna3DState = null;
+function setupLuna3D() {
+  const stage = document.getElementById('luna3dStage');
+  if (!stage) return;
+  const begin = () => {
+    if (luna3DState?.loading || luna3DState?.ready) return;
+    luna3DState = { loading: true, ready: false, paused: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false, visible: true, targetYaw: 0, targetPitch: 0, frame: 0 };
+    loadLuna3D(stage).catch(error => {
+      console.warn('Luna 3D scene could not load; keeping the illustrated fallback.', error);
+      luna3DState.loading = false;
+      stage.parentElement?.classList.remove('is-ready');
+      const status = document.getElementById('luna3dStatus');
+      if (status) status.textContent = 'Luna’s little world is resting. Her charm is here while she naps.';
+    });
+  };
+  if (!('IntersectionObserver' in window)) { begin(); return; }
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); begin(); }
+  }, { rootMargin: '180px 0px', threshold: 0.01 });
+  observer.observe(stage);
+}
+async function loadLuna3D(stage) {
+  const status = document.getElementById('luna3dStatus');
+  const modelUrl = stage.dataset.modelUrl;
+  if (!modelUrl) throw new Error('3D model URL is missing');
+  if (status) status.textContent = 'Lighting Luna’s little world…';
+  const [THREE, loaderModule] = await Promise.all([
+    import('three'),
+    import('three/addons/loaders/GLTFLoader.js')
+  ]);
+  const { GLTFLoader } = loaderModule;
+  const canvas = document.getElementById('luna3dCanvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 30);
+  camera.position.set(0, 1.35, 4.55);
+  camera.lookAt(0, 0.95, 0);
+  scene.add(new THREE.HemisphereLight(0xfff8e9, 0x28585a, 2.05));
+  const keyLight = new THREE.DirectionalLight(0xfff3d0, 3.2);
+  keyLight.position.set(-3, 5, 4);
+  scene.add(keyLight);
+  const tealRim = new THREE.PointLight(0x36c1bf, 17, 8, 2);
+  tealRim.position.set(2.8, 2.4, -1.8);
+  scene.add(tealRim);
+  const warmFill = new THREE.PointLight(0xf4d37a, 9, 7, 2);
+  warmFill.position.set(-2, 1.3, 2.2);
+  scene.add(warmFill);
+
+  const gold = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.84, roughness: 0.25 });
+  const teal = new THREE.MeshStandardMaterial({ color: 0x075e63, metalness: 0.55, roughness: 0.3 });
+  const paleTeal = new THREE.MeshStandardMaterial({ color: 0x65c2bc, metalness: 0.55, roughness: 0.24, transparent: true, opacity: 0.52 });
+  const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.91, 1.02, 0.16, 96), teal);
+  plinth.position.y = 0.02;
+  scene.add(plinth);
+  const plinthTop = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.035, 96), gold);
+  plinthTop.position.y = 0.11;
+  scene.add(plinthTop);
+  const plinthInlay = new THREE.Mesh(new THREE.CylinderGeometry(0.83, 0.83, 0.022, 96), teal);
+  plinthInlay.position.y = 0.139;
+  scene.add(plinthInlay);
+  const halo = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.012, 12, 128), paleTeal);
+  halo.position.set(0, 0.95, -0.18);
+  halo.rotation.x = 1.12;
+  scene.add(halo);
+  const haloGold = new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.009, 10, 128), gold);
+  haloGold.material = gold.clone();
+  haloGold.material.transparent = true;
+  haloGold.material.opacity = 0.62;
+  haloGold.position.set(0, 0.84, -0.26);
+  haloGold.rotation.x = 0.96;
+  scene.add(haloGold);
+
+  const modelRoot = new THREE.Group();
+  scene.add(modelRoot);
+  const gltf = await new GLTFLoader().loadAsync(modelUrl);
+  const model = gltf.scene;
+  const initialBounds = new THREE.Box3().setFromObject(model);
+  const initialSize = initialBounds.getSize(new THREE.Vector3());
+  const longest = Math.max(initialSize.x, initialSize.y, initialSize.z) || 1;
+  model.scale.setScalar(2.05 / longest);
+  const bounds = new THREE.Box3().setFromObject(model);
+  const center = bounds.getCenter(new THREE.Vector3());
+  model.position.x -= center.x;
+  model.position.z -= center.z;
+  model.position.y += 0.15 - bounds.min.y;
+  modelRoot.add(model);
+  const baseY = modelRoot.position.y;
+
+  const sparkles = [];
+  for (let i = 0; i < 14; i++) {
+    const sparkle = new THREE.Mesh(new THREE.SphereGeometry(i % 4 === 0 ? 0.035 : 0.022, 10, 10), gold);
+    sparkle.userData = { angle: (i / 14) * Math.PI * 2, radius: 1.18 + (i % 3) * 0.1, lift: 0.55 + (i % 5) * 0.31, phase: i * 0.8 };
+    sparkles.push(sparkle);
+    scene.add(sparkle);
+  }
+
+  const state = luna3DState;
+  Object.assign(state, { ready: true, loading: false, THREE, renderer, scene, camera, modelRoot, halo, haloGold, sparkles, baseY, targetYaw: 0, targetPitch: 0, frame: 0 });
+  const world = stage.parentElement;
+  world?.classList.add('is-ready');
+  if (status) status.textContent = 'Meet Luna Tuna — your little 3D Persian cat.';
+  world?.querySelectorAll('.luna-world-controls button').forEach(button => button.disabled = false);
+  const motionButton = document.getElementById('luna3dMotionButton');
+  if (motionButton) {
+    motionButton.setAttribute('aria-pressed', String(!state.paused));
+    motionButton.textContent = state.paused ? 'Resume Luna' : 'Pause Luna';
+  }
+
+  const resize = () => {
+    if (!state.ready) return;
+    const width = Math.max(1, stage.clientWidth), height = Math.max(1, stage.clientHeight);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+    renderLuna3D();
+  };
+  state.resizeObserver = new ResizeObserver(resize);
+  state.resizeObserver.observe(stage);
+  resize();
+
+  let pointer = null;
+  stage.addEventListener('pointerdown', event => {
+    if (event.target.closest('.luna-world-controls')) return;
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, lastY: event.clientY, moved: false };
+    stage.setPointerCapture?.(event.pointerId);
+  });
+  stage.addEventListener('pointermove', event => {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    const dx = event.clientX - pointer.lastX, dy = event.clientY - pointer.lastY;
+    if (Math.abs(event.clientX - pointer.x) + Math.abs(event.clientY - pointer.y) > 5) pointer.moved = true;
+    state.targetYaw += dx * 0.009;
+    state.targetPitch = Math.max(-0.34, Math.min(0.34, state.targetPitch + dy * 0.004));
+    pointer.lastX = event.clientX; pointer.lastY = event.clientY;
+    renderLuna3D();
+  });
+  stage.addEventListener('pointerup', event => {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    if (!pointer.moved && !state.paused) state.reactionUntil = performance.now() + 900;
+    pointer = null;
+    renderLuna3D();
+  });
+  stage.addEventListener('pointercancel', () => { pointer = null; });
+  stage.addEventListener('keydown', event => {
+    const step = 0.24;
+    if (event.key === 'ArrowLeft') state.targetYaw -= step;
+    else if (event.key === 'ArrowRight') state.targetYaw += step;
+    else if (event.key === 'ArrowUp') state.targetPitch = Math.min(0.34, state.targetPitch + step);
+    else if (event.key === 'ArrowDown') state.targetPitch = Math.max(-0.34, state.targetPitch - step);
+    else return;
+    event.preventDefault();
+    renderLuna3D();
+  });
+  state.visibilityObserver = new IntersectionObserver(entries => {
+    state.visible = entries.some(entry => entry.isIntersecting);
+    if (state.visible && !document.hidden && !state.paused) startLuna3DLoop();
+    else stopLuna3DLoop();
+  }, { threshold: 0.01 });
+  state.visibilityObserver.observe(stage);
+  state.visibilityListener = () => {
+    if (document.hidden) stopLuna3DLoop();
+    else if (state.visible && !state.paused) startLuna3DLoop();
+    else renderLuna3D();
+  };
+  document.addEventListener('visibilitychange', state.visibilityListener);
+  if (!state.paused) startLuna3DLoop();
+  else renderLuna3D();
+}
+function renderLuna3D() {
+  const state = luna3DState;
+  if (state?.ready) state.renderer.render(state.scene, state.camera);
+}
+function startLuna3DLoop() {
+  const state = luna3DState;
+  if (!state?.ready || state.paused || !state.visible || document.hidden || state.frame) return;
+  const THREE = state.THREE;
+  const tick = time => {
+    state.frame = 0;
+    if (!state.visible || document.hidden || state.paused) return;
+    const seconds = time * 0.001;
+    const reaction = state.reactionUntil && performance.now() < state.reactionUntil
+      ? Math.sin((1 - (state.reactionUntil - performance.now()) / 900) * Math.PI) * 0.13 : 0;
+    state.modelRoot.rotation.y = state.targetYaw + Math.sin(seconds * 0.34) * 0.18;
+    state.modelRoot.rotation.x = state.targetPitch + Math.sin(seconds * 0.47) * 0.025;
+    state.modelRoot.position.y = state.baseY + Math.sin(seconds * 1.3) * 0.035 + reaction;
+    state.halo.rotation.z = seconds * 0.13;
+    state.haloGold.rotation.z = -seconds * 0.1;
+    state.sparkles.forEach(sparkle => {
+      const data = sparkle.userData;
+      const angle = data.angle + seconds * 0.16;
+      sparkle.position.set(Math.cos(angle) * data.radius, data.lift + Math.sin(seconds + data.phase) * 0.06, Math.sin(angle) * data.radius);
+    });
+    state.renderer.render(state.scene, state.camera);
+    state.frame = requestAnimationFrame(tick);
+  };
+  state.frame = requestAnimationFrame(tick);
+}
+function stopLuna3DLoop() {
+  if (!luna3DState?.frame) return;
+  cancelAnimationFrame(luna3DState.frame);
+  luna3DState.frame = 0;
+}
+function rotateLuna3D(angle) {
+  if (!luna3DState?.ready) return;
+  luna3DState.targetYaw += angle;
+  renderLuna3D();
+}
+function toggleLuna3DMotion() {
+  const state = luna3DState;
+  if (!state?.ready) return;
+  state.paused = !state.paused;
+  const button = document.getElementById('luna3dMotionButton');
+  if (button) {
+    button.setAttribute('aria-pressed', String(!state.paused));
+    button.textContent = state.paused ? 'Resume Luna' : 'Pause Luna';
+  }
+  if (state.paused) { stopLuna3DLoop(); renderLuna3D(); }
+  else startLuna3DLoop();
 }
