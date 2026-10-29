@@ -182,13 +182,16 @@ function setupScrollAnimations() {
 // ========== CART MANAGEMENT ==========
 
 function loadCart() {
-    try { const saved = localStorage.getItem('catene_cart'); const parsed = saved ? JSON.parse(saved) : [];
-      cart = Array.isArray(parsed) ? parsed.filter(item => item && Number.isInteger(item.id) && Number.isFinite(item.price) && Number.isInteger(item.quantity) && item.quantity > 0) : [];
+    try {
+      const saved = localStorage.getItem('catene_cart');
+      const parsed = saved ? JSON.parse(saved) : [];
+      cart = Array.isArray(parsed) ? parsed.filter(item => item && Number.isInteger(item.id) && Number.isInteger(item.quantity) && item.quantity > 0 && products.some(product => product.id === item.id))
+        .map(item => ({ ...products.find(product => product.id === item.id), quantity: Math.min(item.quantity, 99) })) : [];
     } catch { cart = []; }
 }
 
 function saveCart() {
-    localStorage.setItem('catene_cart', JSON.stringify(cart));
+    try { localStorage.setItem('catene_cart', JSON.stringify(cart)); } catch { showNotification('This browser could not save your bag.', 'error'); }
     updateCartUI();
 }
 
@@ -391,9 +394,10 @@ function updateCartSummary() {
 
 function checkout() {
     if (!cart.length) { showNotification('Your bag is empty. Add an item first.', 'error'); return; }
-    const lines = cart.map(item => `• ${item.name} × ${item.quantity} — PKR ${(item.price*item.quantity).toLocaleString()}`).join('%0D%0A');
-    const body = `Hello Catene.pk,%0D%0A%0D%0AI’d like to ask about:%0D%0A${lines}%0D%0A%0D%0AItem subtotal: PKR ${getCartTotal().toLocaleString()}%0D%0APlease confirm availability, delivery charges and payment options.`;
-    window.location.href = `mailto:maheenramzan13@gmail.com?subject=Catene.pk%20order%20enquiry&body=${body}`;
+    const lines = cart.map(item => `• ${item.name} × ${item.quantity} — PKR ${(item.price*item.quantity).toLocaleString()}`).join('\\n');
+    const body = `Hello Catene.pk,\\n\\nI’d like to ask about:\\n${lines}\\n\\nItem subtotal: PKR ${getCartTotal().toLocaleString()}\\nPlease confirm availability, delivery charges and payment options.`;
+    const subject = encodeURIComponent('Catene.pk order enquiry');
+    window.location.href = `mailto:maheenramzan13@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
 }
 
 function applyPromo() {}
