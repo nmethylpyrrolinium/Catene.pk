@@ -1801,3 +1801,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media(max-width:760px) { .charm-scene { height:330px; max-width:330px; } .charm-object { transform:scale(.85) rotateX(calc(var(--tilt-x,0deg) + 5deg)) rotateY(calc(var(--tilt-y,0deg) + var(--turn,0deg))) rotateZ(-7deg); } }
 @media(max-width:420px) { .charm-scene { height:290px; max-width:290px; } .charm-object { transform:scale(.72) rotateX(calc(var(--tilt-x,0deg) + 5deg)) rotateY(calc(var(--tilt-y,0deg) + var(--turn,0deg))) rotateZ(-7deg); } }
 @media(prefers-reduced-motion:reduce) { .charm-object { transition:none!important; } .charm-scene:hover .charm-object,.charm-scene:focus-visible .charm-object { transition:none!important; } }
+
+
+/* Interactive, lazy-loaded Luna Tuna 3D world. */
+.luna-world { position:relative; width:min(100%,470px); height:480px; margin:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.luna-stage { position:absolute; inset:0 0 34px; overflow:hidden; border:1px solid #d4af3755; border-radius:50%; background:radial-gradient(ellipse at 50% 44%,#ffffff 0%,#edf3ef 51%,#dce8e2 74%,#d4af3720 100%); box-shadow:inset 0 0 50px #ffffffd9,0 25px 70px #17383a18; touch-action:pan-y; outline-offset:6px; }
+.luna-stage::before,.luna-stage::after { content:""; position:absolute; inset:8%; border:1px solid #d4af3740; border-radius:50%; transform:rotate(-18deg) scaleY(.32); pointer-events:none; }
+.luna-stage::after { inset:14%; border-color:#00777f22; transform:rotate(22deg) scaleY(.34); }
+.luna-stage canvas { position:absolute; inset:0; display:block; width:100%; height:100%; opacity:0; transition:opacity .6s ease; }
+.luna-world.is-ready .luna-stage canvas { opacity:1; }
+.luna-model-fallback { position:absolute; inset:0; z-index:2; display:grid; place-items:center; opacity:1; transition:opacity .55s ease; }
+.luna-world.is-ready .luna-model-fallback { opacity:0; pointer-events:none; }
+.luna-model-fallback .charm-scene { width:100%; height:100%; transform:scale(.78); }
+.luna-world-status { position:absolute; z-index:3; left:0; right:0; bottom:60px; margin:0; text-align:center; color:#00777f; font:500 .78rem 'Poppins',sans-serif; letter-spacing:.04em; text-shadow:0 1px 8px #fff; pointer-events:none; }
+.luna-world.is-ready .luna-world-status { color:#52686a; }
+.luna-world-controls { position:absolute; z-index:4; bottom:25px; display:flex; justify-content:center; align-items:center; gap:9px; }
+.luna-world-controls button { min-width:38px; min-height:36px; border:1px solid #d4af3780; border-radius:22px; padding:6px 13px; background:#ffffffed; color:#00777f; font:600 .78rem 'Poppins',sans-serif; box-shadow:0 5px 16px #17383a14; cursor:pointer; }
+.luna-world-controls button:hover:not(:disabled) { background:#00777f; color:#fff; transform:translateY(-1px); }
+.luna-world-controls button:disabled { opacity:.55; cursor:wait; }
+.luna-world-controls #luna3dMotionButton { min-width:105px; }
+.luna-world-hint { position:absolute; bottom:-2px; margin:0; color:#718184; font:400 .68rem 'Poppins',sans-serif; letter-spacing:.04em; }
+@media(max-width:760px) { .luna-world { width:min(100%,410px); height:420px; } .luna-stage { inset:0 0 32px; } .luna-model-fallback .charm-scene { transform:scale(.7); } .luna-world-status { bottom:55px; } .luna-world-controls { bottom:23px; } }
+@media(max-width:420px) { .luna-world { width:min(100%,340px); height:360px; } .luna-stage { inset:0 0 30px; } .luna-model-fallback .charm-scene { transform:scale(.6); } .luna-world-controls { gap:5px; } .luna-world-controls button { min-width:34px; padding:5px 9px; } .luna-world-controls #luna3dMotionButton { min-width:95px; } .luna-world-status { bottom:51px; font-size:.7rem; } .luna-world-hint { font-size:.6rem; } }
+@media(prefers-reduced-motion:reduce) { .luna-stage canvas,.luna-model-fallback { transition:none!important; } .luna-world-controls button:hover:not(:disabled) { transform:none; } }

@@ -34,13 +34,13 @@ const birthdayConfig = {
 
 After the date is confirmed, replace `null` for `day` (1–31) and `month` (1–12). The date is validated, including February 29. The greeting appears only on that Lahore calendar date from 2027 onward, while a visitor uses the site. A session guard prevents it from appearing repeatedly during the same visit. Until both values are set, birthday mode stays inactive.
 
-## Interactive 3D-style hero charm
+## Interactive 3D Luna hero
 
-The hero charm uses layered CSS 3D transforms and shadows. It tilts with pointer movement and turns on activation; it is a CSS illustration, not a scanned/WebGL model. It uses no 3D library, external model, or extra network request.
+The homepage hero loads an original stylized Persian-cat model as a glTF binary (GLB) in a Three.js scene. Luna floats above a teal-and-gold display with animated orbit rings and small gold particles. Visitors can drag to turn her, use the arrow keys or turn buttons, tap for a bounce, and pause or resume the idle animation.
 
-## Luna Tuna
+The scene is loaded only when it approaches the viewport. If WebGL or the model cannot load, the CSS charm remains as a fallback. The animation pauses when the scene is off-screen or the browser tab is hidden, and it respects reduced-motion preferences.
 
-Luna is a small inline SVG illustration with a subtle idle motion and a click-to-greet note. No 3D model or external model asset is included, and no audio is used. Reduced-motion preferences are respected.
+Three.js 0.186.1 and its GLTF loader are imported from jsDelivr; the GLB is served from the model-generation provider. Those two external services must remain available for the full 3D experience. The static site still has no build step. The small Luna button in the page corner remains an inline SVG greeting.
 
 ## Local verification
 
