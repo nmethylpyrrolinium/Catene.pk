@@ -548,7 +548,7 @@ function setupLuna3D() {
       luna3DState.loading = false;
       stage.parentElement?.classList.remove('is-ready');
       const status = document.getElementById('luna3dStatus');
-      if (status) status.textContent = 'Luna’s little world is resting. Her charm is here while she naps.';
+      if (status) status.textContent = 'Luna’s 3D view could not load, but her portrait is still here.';
     });
   };
   if (!('IntersectionObserver' in window)) { begin(); return; }
@@ -724,6 +724,8 @@ function startLuna3DLoop() {
       ? Math.sin((1 - (state.reactionUntil - performance.now()) / 900) * Math.PI) * 0.13 : 0;
     state.modelRoot.rotation.y = state.targetYaw + Math.sin(seconds * 0.34) * 0.18;
     state.modelRoot.rotation.x = state.targetPitch + Math.sin(seconds * 0.47) * 0.025;
+    state.modelRoot.rotation.z = Math.sin(seconds * 0.58) * 0.035 + reaction * 0.42;
+    state.modelRoot.scale.setScalar(1 + Math.sin(seconds * 1.8) * 0.012);
     state.modelRoot.position.y = state.baseY + Math.sin(seconds * 1.3) * 0.035 + reaction;
     state.halo.rotation.z = seconds * 0.13;
     state.haloGold.rotation.z = -seconds * 0.1;
