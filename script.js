@@ -571,21 +571,21 @@ async function loadLuna3D(stage) {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.toneMappingExposure = 1;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 30);
   camera.position.set(0, 1.35, 4.55);
   camera.lookAt(0, 0.95, 0);
-  scene.add(new THREE.HemisphereLight(0xfff8e9, 0x28585a, 2.05));
-  const keyLight = new THREE.DirectionalLight(0xfff3d0, 3.2);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x9aaca9, 2.6));
+  const keyLight = new THREE.DirectionalLight(0xfffdf8, 2.2);
   keyLight.position.set(-3, 5, 4);
   scene.add(keyLight);
-  const tealRim = new THREE.PointLight(0x36c1bf, 17, 8, 2);
+  const tealRim = new THREE.PointLight(0x91e0da, 5.5, 8, 2);
   tealRim.position.set(2.8, 2.4, -1.8);
   scene.add(tealRim);
-  const warmFill = new THREE.PointLight(0xf4d37a, 9, 7, 2);
+  const warmFill = new THREE.PointLight(0xfff2e8, 2.8, 7, 2);
   warmFill.position.set(-2, 1.3, 2.2);
   scene.add(warmFill);
 
@@ -602,14 +602,14 @@ async function loadLuna3D(stage) {
   plinthInlay.position.y = 0.139;
   scene.add(plinthInlay);
   const halo = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.012, 12, 128), paleTeal);
-  halo.position.set(0, 0.95, -0.18);
+  halo.position.set(0, 0.95, -1.65);
   halo.rotation.x = 1.12;
   scene.add(halo);
   const haloGold = new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.009, 10, 128), gold);
   haloGold.material = gold.clone();
   haloGold.material.transparent = true;
   haloGold.material.opacity = 0.62;
-  haloGold.position.set(0, 0.84, -0.26);
+  haloGold.position.set(0, 0.84, -1.85);
   haloGold.rotation.x = 0.96;
   scene.add(haloGold);
 
@@ -617,6 +617,19 @@ async function loadLuna3D(stage) {
   scene.add(modelRoot);
   const gltf = await new GLTFLoader().loadAsync(modelUrl);
   const model = gltf.scene;
+  model.traverse(part => {
+    if (!part.isMesh) return;
+    part.castShadow = false;
+    part.receiveShadow = false;
+    const tuneMaterial = source => {
+      const material = source.clone();
+      if (material.color) material.color.set(0xffffff);
+      if ('metalness' in material) material.metalness = 0;
+      if ('roughness' in material) material.roughness = Math.max(material.roughness || 0, 0.88);
+      return material;
+    };
+    part.material = Array.isArray(part.material) ? part.material.map(tuneMaterial) : tuneMaterial(part.material);
+  });
   const initialBounds = new THREE.Box3().setFromObject(model);
   const initialSize = initialBounds.getSize(new THREE.Vector3());
   const longest = Math.max(initialSize.x, initialSize.y, initialSize.z) || 1;
