@@ -36,7 +36,7 @@ After the date is confirmed, replace `null` for `day` (1–31) and `month` (1–
 
 ## Interactive 3D Luna hero
 
-The homepage hero loads a reference-matched Luna Persian-cat model as a glTF binary (GLB) in a Three.js scene. She has a fluffy white coat, pale blue eyes, pink nose and embroidered lace collar. Luna floats above a teal-and-gold display with animated orbit rings and small gold particles. Visitors can drag to turn her, use the arrow keys or turn buttons, tap for a bounce, and pause or resume the idle animation.
+The homepage hero loads a cleaner reference-matched Luna Persian-cat model as a glTF binary (GLB) in a Three.js scene. She has a fluffy white coat, open pale blue eyes, pink nose and embroidered lace collar. Neutral lighting and matte fur materials keep her coat bright. Luna floats above a teal-and-gold display with animated orbit rings and small gold particles. Visitors can drag to turn her, use the arrow keys or turn buttons, tap for a bounce, and pause or resume the idle animation.
 
 The scene is loaded only when it approaches the viewport. While the model loads, a local portrait of Luna appears; if that image also fails, the CSS charm is the final fallback. If WebGL or the model cannot load, Luna’s portrait remains visible. The animation pauses when the scene is off-screen or the browser tab is hidden, and it respects reduced-motion preferences.
 
