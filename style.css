@@ -1824,3 +1824,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media(max-width:760px) { .luna-world { width:min(100%,410px); height:420px; } .luna-stage { inset:0 0 32px; } .luna-model-fallback .charm-scene { transform:scale(.7); } .luna-world-status { bottom:55px; } .luna-world-controls { bottom:23px; } }
 @media(max-width:420px) { .luna-world { width:min(100%,340px); height:360px; } .luna-stage { inset:0 0 30px; } .luna-model-fallback .charm-scene { transform:scale(.6); } .luna-world-controls { gap:5px; } .luna-world-controls button { min-width:34px; padding:5px 9px; } .luna-world-controls #luna3dMotionButton { min-width:95px; } .luna-world-status { bottom:51px; font-size:.7rem; } .luna-world-hint { font-size:.6rem; } }
 @media(prefers-reduced-motion:reduce) { .luna-stage canvas,.luna-model-fallback { transition:none!important; } .luna-world-controls button:hover:not(:disabled) { transform:none; } }
+
+.luna-cat-poster { position:relative; z-index:1; display:block; width:88%; height:94%; object-fit:contain; border-radius:50%; mix-blend-mode:multiply; filter:drop-shadow(0 18px 16px #17383a1c); }
+.luna-cat-poster[hidden], .luna-model-fallback .charm-scene[hidden] { display:none!important; }

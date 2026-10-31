@@ -36,9 +36,9 @@ After the date is confirmed, replace `null` for `day` (1–31) and `month` (1–
 
 ## Interactive 3D Luna hero
 
-The homepage hero loads an original stylized Persian-cat model as a glTF binary (GLB) in a Three.js scene. Luna floats above a teal-and-gold display with animated orbit rings and small gold particles. Visitors can drag to turn her, use the arrow keys or turn buttons, tap for a bounce, and pause or resume the idle animation.
+The homepage hero loads a reference-matched Luna Persian-cat model as a glTF binary (GLB) in a Three.js scene. She has a fluffy white coat, pale blue eyes, pink nose and embroidered lace collar. Luna floats above a teal-and-gold display with animated orbit rings and small gold particles. Visitors can drag to turn her, use the arrow keys or turn buttons, tap for a bounce, and pause or resume the idle animation.
 
-The scene is loaded only when it approaches the viewport. If WebGL or the model cannot load, the CSS charm remains as a fallback. The animation pauses when the scene is off-screen or the browser tab is hidden, and it respects reduced-motion preferences.
+The scene is loaded only when it approaches the viewport. While the model loads, a local portrait of Luna appears; if that image also fails, the CSS charm is the final fallback. If WebGL or the model cannot load, Luna’s portrait remains visible. The animation pauses when the scene is off-screen or the browser tab is hidden, and it respects reduced-motion preferences.
 
 Three.js 0.186.1 and its GLTF loader are imported from jsDelivr; the GLB is served from the model-generation provider. Those two external services must remain available for the full 3D experience. The static site still has no build step. The small Luna button in the page corner remains an inline SVG greeting.
 
